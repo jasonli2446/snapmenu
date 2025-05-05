@@ -1,10 +1,11 @@
 import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, ScrollView, Button } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Colors } from '@/constants/Colors';
 
 // Define the type for enriched dish data
 type Dish = string | {
@@ -27,55 +28,66 @@ export default function ResultsScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Menu Results</ThemedText>
-      </ThemedView>
-      
-      {imageUri && (
-        <Image
-          source={{ uri: imageUri as string }}
-          style={styles.menuImage}
-          contentFit="cover"
-        />
-      )}
-      
-      {parsedResults && parsedResults.length > 0 ? (
-        <ThemedView style={styles.resultsContainer}>
-          <ThemedText type="subtitle" style={styles.resultsTitle}>Detected Dishes:</ThemedText>
-          {Array.isArray(parsedResults) && parsedResults.map((item, idx) => (
-            <ThemedView key={idx} style={styles.dishItem}>
-              {typeof item === 'string' ? (
-                <ThemedText>{item}</ThemedText>
-              ) : (
-                <>
-                  <ThemedText style={{fontWeight: 'bold'}}>{item.name}</ThemedText>
-                  {item.description && <ThemedText>{item.description}</ThemedText>}
-                </>
-              )}
-            </ThemedView>
-          ))}
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.primary }]}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title" darkColor="white" lightColor="white">Results</ThemedText>
         </ThemedView>
-      ) : (
-        <ThemedView style={styles.noResultsContainer}>
-          <ThemedText>No dishes were detected in this image.</ThemedText>
-        </ThemedView>
-      )}
-      
-      <ThemedView style={styles.buttonContainer}>
-        <Button title="Scan Another Menu" onPress={goHome} color="#0a7ea4" />
-      </ThemedView>
-    </ScrollView>
+        
+        {imageUri && (
+          <Image
+            source={{ uri: imageUri as string }}
+            style={styles.menuImage}
+            contentFit="cover"
+          />
+        )}
+        
+        {parsedResults && parsedResults.length > 0 ? (
+          <ThemedView style={styles.resultsContainer}>
+            <ThemedText type="subtitle" style={styles.resultsTitle} darkColor={Colors.light.text} lightColor={Colors.light.text}>
+              Detected Dishes:
+            </ThemedText>
+            {Array.isArray(parsedResults) && parsedResults.map((item, idx) => (
+              <ThemedView key={idx} style={styles.dishItem}>
+                {typeof item === 'string' ? (
+                  <ThemedText style={styles.dishText}>{item}</ThemedText>
+                ) : (
+                  <>
+                    <ThemedText style={styles.dishName}>{item.name}</ThemedText>
+                    {item.description && <ThemedText style={styles.dishDescription}>{item.description}</ThemedText>}
+                  </>
+                )}
+              </ThemedView>
+            ))}
+          </ThemedView>
+        ) : (
+          <ThemedView style={styles.noResultsContainer}>
+            <ThemedText darkColor="white" lightColor="white">No dishes were detected in this image.</ThemedText>
+          </ThemedView>
+        )}
+        
+        <TouchableOpacity 
+          style={[styles.button, { backgroundColor: Colors.light.secondary }]}
+          onPress={goHome}
+        >
+          <ThemedText style={styles.buttonText}>Scan Another Menu</ThemedText>
+        </TouchableOpacity>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollContainer: {
     padding: 20,
     alignItems: 'center',
-    paddingBottom: 100,
+    paddingBottom: 50,
   },
   titleContainer: {
+    marginTop: 40,
     marginBottom: 24,
     alignItems: 'center',
   },
@@ -84,12 +96,14 @@ const styles = StyleSheet.create({
     height: 200,
     marginVertical: 20,
     borderRadius: 10,
+    borderWidth: 4,
+    borderColor: Colors.light.secondary
   },
   resultsContainer: {
     width: '100%',
     padding: 16,
     borderRadius: 8,
-    backgroundColor: 'rgba(10, 126, 164, 0.1)',
+    backgroundColor: Colors.light.background,
   },
   noResultsContainer: {
     width: '100%',
@@ -99,15 +113,43 @@ const styles = StyleSheet.create({
   },
   resultsTitle: {
     marginBottom: 16,
+    color: Colors.light.text
   },
   dishItem: {
-    marginBottom: 8,
-    paddingLeft: 8,
-    borderLeftWidth: 2,
-    borderLeftColor: '#0a7ea4',
+    marginBottom: 15,
+    paddingLeft: 12,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.secondary,
   },
-  buttonContainer: {
+  dishText: {
+    fontSize: 16,
+    color: Colors.light.text,
+  },
+  dishName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.light.text,
+  },
+  dishDescription: {
+    fontSize: 14,
+    color: Colors.light.text,
+    marginTop: 4,
+  },
+  button: {
+    width: '80%',
+    paddingVertical: 14,
+    borderRadius: 25,
     marginTop: 30,
-    width: '100%',
-  }
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
