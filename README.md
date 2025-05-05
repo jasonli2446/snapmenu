@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/images/logo.png" alt="SnapMenu Logo" width="200"/>
+</p>
+
 # 🍽️ SnapMenu
 
 SnapMenu is an AI-powered mobile app that helps users understand restaurant menus by simply taking a photo. It extracts dishes using OCR, enriches them with detailed descriptions and tags using GPT, and displays real food images pulled from the web.
@@ -135,8 +139,17 @@ The backend is deployed via Render using GitHub integration:
 
 ## 📷 Screenshots
 
-(Add screenshots of the mobile UI and enriched dish results here)
-
+<p align="center">
+  <img src="docs/images/home-screen.png" alt="Home Screen" width="250"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/images/loading-screen.png" alt="Loading Screen" width="250"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/images/results-screen1.png" alt="Results Screen" width="250"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/images/results-screen2.png" alt="Results Screen" width="250"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="docs/images/results-screen3.png" alt="Results Screen" width="250"/>
+</p>
 ---
 
 ## 👨‍💻 Author
