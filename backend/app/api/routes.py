@@ -10,8 +10,13 @@ router = APIRouter()
 @router.post("/extract-dishes")
 async def extract_dishes(file: UploadFile = File(...)):
     contents = await file.read()
-    dishes = extract_dishes_from_image(contents)
-    return {"dishes": dishes}
+    raw_dishes = extract_dishes_from_image(contents)
+    # Automatically enrich the dishes with AI processing
+    enriched_dishes = enrich_dishes(raw_dishes)
+    return {
+        "dishes": raw_dishes,  # Original OCR results
+        "enriched_dishes": enriched_dishes,  # AI-processed results
+    }
 
 
 class DishRequest(BaseModel):
