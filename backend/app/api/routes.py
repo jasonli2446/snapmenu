@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File
 from pydantic import BaseModel
 from typing import List, Dict
-from app.core.ocr import extract_dishes_from_image
+from app.core.ocr import extract_dishes_from_image, process_pdf
 from app.core.enrichment import enrich_dishes
 
 router = APIRouter()
@@ -10,7 +10,13 @@ router = APIRouter()
 @router.post("/extract-dishes")
 async def extract_dishes(file: UploadFile = File(...)):
     contents = await file.read()
-    raw_dishes = extract_dishes_from_image(contents)
+
+    # Check if the file is a PDF
+    if file.filename.lower().endswith(".pdf"):
+        raw_dishes = process_pdf(contents)
+    else:
+        raw_dishes = extract_dishes_from_image(contents)
+
     # Automatically enrich the dishes with AI processing
     enriched_dishes = enrich_dishes(raw_dishes)
     return {
