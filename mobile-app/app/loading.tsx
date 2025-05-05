@@ -6,6 +6,7 @@ import { Image } from 'expo-image';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { API_CONFIG } from '@/constants/Api';
+import { Colors } from '@/constants/Colors';
 
 export default function LoadingScreen() {
   const { imageUri } = useLocalSearchParams();
@@ -68,7 +69,7 @@ export default function LoadingScreen() {
   }, [imageUri]);
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: Colors.light.primary }]}>
       {imageUri && (
         <Image
           source={{ uri: imageUri as string }}
@@ -77,15 +78,17 @@ export default function LoadingScreen() {
         />
       )}
       
-      <ActivityIndicator size="large" color="#0a7ea4" style={styles.loader} />
+      <ActivityIndicator size="large" color={Colors.light.secondary} style={styles.loader} />
       
-      <ThemedText style={styles.statusText}>{statusText}</ThemedText>
+      <ThemedText style={styles.statusText} darkColor="white" lightColor="white">
+        {statusText}
+      </ThemedText>
       
       <ThemedView style={styles.progressBarContainer}>
         <ThemedView 
           style={[styles.progressBar, { width: `${progress}%` }]} 
-          darkColor="#0a7ea4" 
-          lightColor="#0a7ea4" 
+          darkColor={Colors.light.secondary} 
+          lightColor={Colors.light.secondary} 
         />
       </ThemedView>
     </ThemedView>
@@ -112,12 +115,14 @@ const styles = StyleSheet.create({
   statusText: {
     marginBottom: 20,
     fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   progressBarContainer: {
     width: '80%',
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#e0e0e0',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     overflow: 'hidden',
   },
   progressBar: {
