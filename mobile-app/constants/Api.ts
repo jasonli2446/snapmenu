@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '@env';
+
 export const API_CONFIG = {
-  BASE_URL: 'http://192.168.137.1:8000',
+  BASE_URL: API_BASE_URL || 'https://snapmenu-backend.onrender.com',
 };
