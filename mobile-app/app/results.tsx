@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
@@ -11,6 +11,21 @@ import { Colors } from '@/constants/Colors';
 type Dish = string | {
   name: string;
   description?: string;
+  tags?: string[];
+};
+
+// Tag colors based on category
+const TAG_COLORS = {
+  'vegetarian': '#43A047', // Green
+  'vegan': '#2E7D32', // Dark Green
+  'gluten-free': '#7B1FA2', // Purple
+  'spicy': '#D32F2F', // Red
+  'very-spicy': '#B71C1C', // Dark Red
+  'contains-nuts': '#FF6D00', // Orange
+  'chef\'s-special': '#FFC107', // Amber
+  'popular': '#1976D2', // Blue
+  'signature-dish': '#F57C00', // Orange
+  'default': '#757575', // Grey
 };
 
 export default function ResultsScreen() {
@@ -25,6 +40,11 @@ export default function ResultsScreen() {
 
   const goHome = () => {
     router.replace('/');
+  };
+
+  // Helper function to determine tag color
+  const getTagColor = (tag: string) => {
+    return TAG_COLORS[tag] || TAG_COLORS.default;
   };
 
   return (
@@ -54,7 +74,24 @@ export default function ResultsScreen() {
                 ) : (
                   <>
                     <ThemedText style={styles.dishName}>{item.name}</ThemedText>
-                    {item.description && <ThemedText style={styles.dishDescription}>{item.description}</ThemedText>}
+                    
+                    {/* Display tags */}
+                    {item.tags && item.tags.length > 0 && (
+                      <View style={styles.tagsContainer}>
+                        {item.tags.map((tag, tagIdx) => (
+                          <View 
+                            key={tagIdx} 
+                            style={[styles.tag, { backgroundColor: getTagColor(tag) }]}
+                          >
+                            <ThemedText style={styles.tagText}>{tag}</ThemedText>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                    
+                    {item.description && 
+                      <ThemedText style={styles.dishDescription}>{item.description}</ThemedText>
+                    }
                   </>
                 )}
               </ThemedView>
@@ -151,5 +188,23 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  tag: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: 6,
+    marginBottom: 6,
+  },
+  tagText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
