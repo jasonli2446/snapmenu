@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/images/logo.png" alt="SnapMenu Logo" width="200"/>
+  <img src="mobile-app/assets/images/logo.png" alt="SnapMenu Logo" width="200"/>
 </p>
 
 # 🍽️ SnapMenu
@@ -140,15 +140,15 @@ The backend is deployed via Render using GitHub integration:
 ## 📷 Screenshots
 
 <p align="center">
-  <img src="docs/images/home-screen.png" alt="Home Screen" width="250"/>
+  <img src="mobile-app/assets/screenshots/home-screen.png" alt="Home Screen" width="250"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/images/loading-screen.png" alt="Loading Screen" width="250"/>
+  <img src="mobile-app/assets/screenshots/loading-screen.png" alt="Loading Screen" width="250"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/images/results-screen1.png" alt="Results Screen" width="250"/>
+  <img src="mobile-app/assets/screenshots/results-screen1.png" alt="Results Screen" width="250"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/images/results-screen2.png" alt="Results Screen" width="250"/>
+  <img src="mobile-app/assets/screenshots/results-screen2.png" alt="Results Screen" width="250"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/images/results-screen3.png" alt="Results Screen" width="250"/>
+  <img src="mobile-app/assets/screenshots/results-screen3.png" alt="Results Screen" width="250"/>
 </p>
 ---
 
