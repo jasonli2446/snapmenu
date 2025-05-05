@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="mobile-app/assets/images/banner.png" alt="SnapMenu Logo" width="200"/>
+  <img src="mobile-app/assets/images/banner.png" alt="SnapMenu Logo" width="600"/>
 </p>
 
 # 🍽️ SnapMenu
