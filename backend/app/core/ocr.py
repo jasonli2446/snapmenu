@@ -1,4 +1,5 @@
 from PIL import Image, ImageFilter, ImageEnhance
+from pdf2image import convert_from_bytes
 import pytesseract
 import io
 import cv2
@@ -10,8 +11,6 @@ import os
 def process_pdf(pdf_bytes: bytes) -> list[str]:
     """Extract text from a PDF menu"""
     try:
-        from pdf2image import convert_from_bytes
-
         images = convert_from_bytes(pdf_bytes)
         all_dishes = []
 
