@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="mobile-app/assets/images/logo.png" alt="SnapMenu Logo" width="200"/>
+  <img src="mobile-app/assets/images/banner.png" alt="SnapMenu Logo" width="200"/>
 </p>
 
 # 🍽️ SnapMenu
@@ -150,6 +150,7 @@ The backend is deployed via Render using GitHub integration:
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="mobile-app/assets/screenshots/results-screen3.png" alt="Results Screen" width="250"/>
 </p>
+
 ---
 
 ## 👨‍💻 Author
