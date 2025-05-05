@@ -232,7 +232,6 @@ def clean_menu_items(lines: list[str]) -> list[str]:
             current_dish = line
             dishes.append(current_dish)
         elif current_dish and i > 0:
-            # This might be a dish description, add to the current dish
             if current_dish in dish_descriptions:
                 dish_descriptions[current_dish] += " " + line
             else:
