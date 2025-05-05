@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 class TagCategory(str, Enum):
@@ -37,7 +37,7 @@ TAG_DEFINITIONS = {
 ALL_TAGS = [tag for tags in TAG_DEFINITIONS.values() for tag in tags]
 
 
-def get_tag_category(tag: str) -> str:
+def get_tag_category(tag: str) -> Optional[str]:
     """Returns the category of a given tag"""
     for category, tags in TAG_DEFINITIONS.items():
         if tag in tags:

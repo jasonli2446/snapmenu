@@ -67,7 +67,7 @@ def enrich_dishes(raw_lines: list[str]) -> list[dict]:
                 dish["tags"] = []
             dish["tags"].extend(assign_tags(dish.get("description", "")))
             # Remove duplicates
-            dish["tags"] = list(set(dish["tags"]))
+            dish["tags"] = list(dict.fromkeys(dish["tags"]))
         return dishes
     except json.JSONDecodeError:
         return []
