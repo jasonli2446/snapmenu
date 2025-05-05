@@ -28,6 +28,7 @@ export default function ResultsScreen() {
   }
 
   const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({});
+  const [menuImageLoaded, setMenuImageLoaded] = useState(false);
   
   const handleImageLoad = (idx: number) => {
     setLoadingImages(prev => ({...prev, [idx]: false}));
@@ -45,19 +46,23 @@ export default function ResultsScreen() {
   return (
     <ThemedView style={[styles.container, { backgroundColor: Colors.light.primary }]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <ThemedView style={styles.titleContainer}>
+        <View style={styles.titleContainer}>
           <ThemedText type="title" style={styles.titleText} darkColor="white" lightColor="white">
             Menu Results
           </ThemedText>
-        </ThemedView>
+        </View>
         
         {imageUri && (
-          <View style={styles.menuImageContainer}>
+          <View style={styles.menuImageWrapper}>
             <Image
               source={{ uri: imageUri as string }}
               style={styles.menuImage}
-              contentFit="cover"
+              contentFit="contain"
+              onLoad={() => setMenuImageLoaded(true)}
             />
+            {menuImageLoaded && (
+              <View style={styles.menuImageBorder} />
+            )}
           </View>
         )}
         
@@ -150,6 +155,9 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginBottom: 20,
     alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '100%',
   },
   titleText: {
     fontSize: 34,
@@ -158,23 +166,18 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
-  menuImageContainer: {
-    width: 220,
-    height: 220,
-    borderRadius: 15,
-    overflow: 'hidden',
+  menuImageWrapper: {
+    position: 'relative',
+    width: 340,
+    height: 340,
     marginBottom: 25,
-    borderWidth: 5,
-    borderColor: Colors.light.secondary,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   menuImage: {
     width: '100%',
     height: '100%',
+    zIndex: 0,
   },
   resultsContainer: {
     width: '100%',
