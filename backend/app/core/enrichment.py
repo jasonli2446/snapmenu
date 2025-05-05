@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import json
 from app.core.tags import ALL_TAGS, get_tag_category
+from app.core.image_search import search_dish_image
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -61,13 +62,21 @@ def enrich_dishes(raw_lines: list[str]) -> list[dict]:
 
     try:
         dishes = json.loads(content)
-        # Apply keyword-based fallback tagging
+
+        # Process each dish
         for dish in dishes:
+            # Add tags
             if "tags" not in dish:
                 dish["tags"] = []
             dish["tags"].extend(assign_tags(dish.get("description", "")))
-            # Remove duplicates
             dish["tags"] = list(dict.fromkeys(dish["tags"]))
+
+            # Fetch image for the dish
+            dish_name = dish.get("name", "")
+            if dish_name:
+                image_url = search_dish_image(dish_name)
+                dish["image_url"] = image_url
+
         return dishes
     except json.JSONDecodeError:
         return []

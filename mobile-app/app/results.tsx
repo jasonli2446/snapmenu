@@ -1,31 +1,20 @@
+import React, { useState } from 'react';
 import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, ScrollView, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, ScrollView, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
+import { TAG_COLORS } from '@/constants/TagColors';
 
 // Define the type for enriched dish data
 type Dish = string | {
   name: string;
   description?: string;
   tags?: string[];
-};
-
-// Tag colors based on category
-const TAG_COLORS = {
-  'vegetarian': '#43A047', // Green
-  'vegan': '#2E7D32', // Dark Green
-  'gluten-free': '#7B1FA2', // Purple
-  'spicy': '#D32F2F', // Red
-  'very-spicy': '#B71C1C', // Dark Red
-  'contains-nuts': '#FF6D00', // Orange
-  'chef\'s-special': '#FFC107', // Amber
-  'popular': '#1976D2', // Blue
-  'signature-dish': '#F57C00', // Orange
-  'default': '#757575', // Grey
+  image_url?: string;
 };
 
 export default function ResultsScreen() {
@@ -37,6 +26,12 @@ export default function ResultsScreen() {
   } catch (e) {
     console.error("Failed to parse results:", e);
   }
+
+  const [loadingImages, setLoadingImages] = useState<Record<number, boolean>>({});
+  
+  const handleImageLoad = (idx: number) => {
+    setLoadingImages(prev => ({...prev, [idx]: false}));
+  };
 
   const goHome = () => {
     router.replace('/');
@@ -51,22 +46,27 @@ export default function ResultsScreen() {
     <ThemedView style={[styles.container, { backgroundColor: Colors.light.primary }]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title" darkColor="white" lightColor="white">Results</ThemedText>
+          <ThemedText type="title" style={styles.titleText} darkColor="white" lightColor="white">
+            Menu Results
+          </ThemedText>
         </ThemedView>
         
         {imageUri && (
-          <Image
-            source={{ uri: imageUri as string }}
-            style={styles.menuImage}
-            contentFit="cover"
-          />
+          <View style={styles.menuImageContainer}>
+            <Image
+              source={{ uri: imageUri as string }}
+              style={styles.menuImage}
+              contentFit="cover"
+            />
+          </View>
         )}
         
         {parsedResults && parsedResults.length > 0 ? (
           <ThemedView style={styles.resultsContainer}>
-            <ThemedText type="subtitle" style={styles.resultsTitle} darkColor={Colors.light.text} lightColor={Colors.light.text}>
-              Detected Dishes:
+            <ThemedText type="subtitle" style={styles.resultsTitle}>
+              Detected Dishes
             </ThemedText>
+            
             {Array.isArray(parsedResults) && parsedResults.map((item, idx) => (
               <ThemedView key={idx} style={styles.dishItem}>
                 {typeof item === 'string' ? (
@@ -89,8 +89,29 @@ export default function ResultsScreen() {
                       </View>
                     )}
                     
+                    {/* Display dish image if available */}
+                    {item.image_url && (
+                      <View style={styles.imageContainer}>
+                        {loadingImages[idx] !== false && (
+                          <ActivityIndicator 
+                            style={styles.imageLoader}
+                            color={Colors.light.primary} 
+                            size="large"
+                          />
+                        )}
+                        <Image
+                          source={{ uri: item.image_url }}
+                          style={styles.dishImage}
+                          contentFit="contain"
+                          onLoad={() => handleImageLoad(idx)}
+                        />
+                      </View>
+                    )}
+                    
                     {item.description && 
-                      <ThemedText style={styles.dishDescription}>{item.description}</ThemedText>
+                      <ThemedText style={styles.dishDescription}>
+                        {item.description}
+                      </ThemedText>
                     }
                   </>
                 )}
@@ -99,7 +120,9 @@ export default function ResultsScreen() {
           </ThemedView>
         ) : (
           <ThemedView style={styles.noResultsContainer}>
-            <ThemedText darkColor="white" lightColor="white">No dishes were detected in this image.</ThemedText>
+            <ThemedText darkColor="white" lightColor="white" style={styles.noResultsText}>
+              No dishes were detected in this image.
+            </ThemedText>
           </ThemedView>
         )}
         
@@ -121,67 +144,106 @@ const styles = StyleSheet.create({
   scrollContainer: {
     padding: 20,
     alignItems: 'center',
-    paddingBottom: 50,
+    paddingBottom: 100,
   },
   titleContainer: {
-    marginTop: 40,
-    marginBottom: 24,
+    marginTop: 50,
+    marginBottom: 20,
     alignItems: 'center',
   },
+  titleText: {
+    fontSize: 34,
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  menuImageContainer: {
+    width: 220,
+    height: 220,
+    borderRadius: 15,
+    overflow: 'hidden',
+    marginBottom: 25,
+    borderWidth: 5,
+    borderColor: Colors.light.secondary,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   menuImage: {
-    width: 200,
-    height: 200,
-    marginVertical: 20,
-    borderRadius: 10,
-    borderWidth: 4,
-    borderColor: Colors.light.secondary
+    width: '100%',
+    height: '100%',
   },
   resultsContainer: {
     width: '100%',
-    padding: 16,
-    borderRadius: 8,
+    padding: 24,
+    borderRadius: 15,
     backgroundColor: Colors.light.background,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   noResultsContainer: {
     width: '100%',
-    padding: 20,
+    padding: 30,
     alignItems: 'center',
     marginTop: 20,
+    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  noResultsText: {
+    fontSize: 18,
+    textAlign: 'center',
   },
   resultsTitle: {
-    marginBottom: 16,
-    color: Colors.light.text
+    marginBottom: 20,
+    color: Colors.light.text,
+    fontSize: 24,
+    textAlign: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: Colors.light.secondary,
+    paddingBottom: 10,
   },
   dishItem: {
-    marginBottom: 15,
-    paddingLeft: 12,
-    borderLeftWidth: 3,
+    marginBottom: 30,
+    paddingLeft: 15,
+    borderLeftWidth: 4,
     borderLeftColor: Colors.light.secondary,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    padding: 15,
+    borderRadius: 10,
   },
   dishText: {
-    fontSize: 16,
+    fontSize: 17,
     color: Colors.light.text,
+    lineHeight: 24,
   },
   dishName: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: Colors.light.text,
+    marginBottom: 5,
   },
   dishDescription: {
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.light.text,
-    marginTop: 4,
+    marginTop: 10,
+    lineHeight: 22,
   },
   button: {
     width: '80%',
     paddingVertical: 14,
     borderRadius: 25,
-    marginTop: 30,
+    marginTop: 40,
     alignItems: 'center',
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 4,
   },
   buttonText: {
@@ -193,18 +255,49 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 8,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   tag: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginRight: 6,
-    marginBottom: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
   },
   tagText: {
     color: 'white',
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  imageContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 220,
+    marginVertical: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  dishImage: {
+    width: '100%',
+    height: '100%',
+  },
+  imageLoader: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginLeft: -15,
+    marginTop: -15,
+    zIndex: 1,
   },
 });
